@@ -29,13 +29,13 @@ Some guidelines on contributing to ggplot:
 Some git
 ~~~~~~~~
 
-This assumes that you cloned from the original ggplot repository (`origin`) and added your
+This assumes that you cloned from the original `nlabpy` repository (`origin`) and added your
 own fork (`mine`) like this:
 
 .. code-block:: bash
 
     git clone https://github.com/eco32i/nlabpy.git # becomes "origin"
-    git remote add mine git@github.com:YourName/ggplot.git
+    git remote add mine git@github.com:YourName/nlabpy.git
 
 
 * Use a feature branch: `git checkout origin/master ; git checkout -b <feature_name>`
