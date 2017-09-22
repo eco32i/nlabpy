@@ -15,17 +15,7 @@ def extract_version():
 
 
 def get_package_data():
-    baseline_images = [
-        'tests/baseline_images/%s/*' % x
-        for x in os.listdir('tests/baseline_images')]
-
-    return {
-        'nlabpy':
-        baseline_images +
-        [
-            "examples/*.html",
-            "examples/*.txt"
-        ]}
+    return ['examples/*.html', 'examples/*.txt', 'examples/*.ipynb']
 
 setup(
     name="nlabpy",
@@ -45,7 +35,9 @@ setup(
     # "python setup.py install"
     install_requires=["bokeh",
                       "pysam",
+                      "plotnine",
                       "pandas >= 0.16.0",
+                      "jupyter",
                       "numpy"],
     classifiers=['Intended Audience :: Science/Research',
                  'Programming Language :: Python',
