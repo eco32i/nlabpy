@@ -15,7 +15,7 @@ def extract_version():
 
 
 def get_package_data():
-    return ['examples/*.html', 'examples/*.txt', 'examples/*.ipynb']
+    return {'nlabpy': ['examples/*.html', 'examples/*.txt', 'examples/*.ipynb']}
 
 setup(
     name="nlabpy",
