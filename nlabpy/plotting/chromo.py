@@ -1,3 +1,4 @@
+from bokeh.models import ColumnDataSource
 import pandas as pd
 import pysam
 
@@ -21,11 +22,11 @@ def chrom_stat(bamfile, chromosomes=None):
     if chromosomes:
         df = df[df['SN'].isin(chromosomes)].copy()
     df['reads'] = df.apply(count_chr_reads, axis=1)
-    df['center'] = df.LN // 2
+    df['center'] = df['LN'] // 2
     return df
 
 
-def bam_to_chromosomes(bamfile, bins=100, colorspec='rgba(255, 0, 0, {:.2f})', chromosomes=None):
+def bam_to_chromosomes(bamfile, bins=100, colorspec='rgba(255, 0, 0, {:.2f})', chromosomes=None, reads=None):
     '''
     Divides chromosomes into specified number of bins and counts number of
     reads in each bin.
@@ -49,11 +50,15 @@ def bam_to_chromosomes(bamfile, bins=100, colorspec='rgba(255, 0, 0, {:.2f})', c
             start = bin_width * i
             end = start + bin_width
             chriter = bam.fetch(chro, start, end)
-            for _ in chriter:
-                cnt += 1
+            for r in chriter:
+                if reads is not None:
+                    if r.qname in reads:
+                        cnt += 1
+                else:
+                    cnt += 1
             res.append((start, end, cnt, chro ))
 
-    df = pd.DataFrame.from_records(res, columns=['start', 'end', 'read_count', 'chrom'])
+    df = pd.DataFrame.from_records(res, columns=['start', 'end', 'read_count', 'chro'])
     df['width'] = df.end - df.start
     df['center'] = df.start + df.width // 2
     
@@ -66,7 +71,7 @@ def chrom_to_int(data, values, field="chro"):
     df = data.copy()
     df[field] = 0
     for i,val in enumerate(reversed(values)):
-        df.ix[df.SN==val, field] = i
+        df.ix[df['SN']==val, field] = i
     return df
         
 
@@ -99,7 +104,7 @@ def draw_ideograms(p, data, chromosomes=None):
             p.patches(
                 xs=xs,
                 ys=ys,
-                fill_alpha=0.2, line_alpha=0.1, color="#2244FF")
+                fill_alpha=0.5, line_alpha=0.1, color="#2244FF")
         else:
             src = ColumnDataSource(group)
             p.rect(x="center", y="chro", width="width", height=0.6, source=src,
