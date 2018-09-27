@@ -1,4 +1,5 @@
 from bokeh.models import ColumnDataSource
+from bokeh.plotting import figure
 import pandas as pd
 import pysam
 
@@ -77,12 +78,16 @@ def chrom_to_int(data, values, field="chro"):
 
 def draw_chromosomes(p, data, chromosomes=None):
     df = chrom_to_int(data, chromosomes)
+    if chromosomes is not None:
+        df = df[df['SN'].isin(chromosomes)]
     p.rect(x="center", y="chro", width="LN", height=0.6, source=ColumnDataSource(df),
-          fill_alpha=0, line_alpha=0.4)
+          fill_alpha=0, line_alpha=0.1)
     
     
 def draw_ideograms(p, data, chromosomes=None):
     df = chrom_to_int(data, chromosomes)
+    if chromosomes is not None:
+        df = df[df['SN'].isin(chromosomes)]
 
     for stain,group in df.groupby('gieStain'):
         if stain == 'acen':
@@ -104,7 +109,7 @@ def draw_ideograms(p, data, chromosomes=None):
             p.patches(
                 xs=xs,
                 ys=ys,
-                fill_alpha=0.5, line_alpha=0.1, color="#2244FF")
+                fill_alpha=0.5, line_alpha=0, color="#2244FF")
         else:
             src = ColumnDataSource(group)
             p.rect(x="center", y="chro", width="width", height=0.6, source=src,
@@ -113,6 +118,8 @@ def draw_ideograms(p, data, chromosomes=None):
     
 def draw_track(p, data, chromosomes=None):
     df = chrom_to_int(data, chromosomes)
+    if chromosomes is not None:
+        df = df[df['SN'].isin(chromosomes)]
     p.rect(x="center", y="chro", width="width", height=0.8, source=ColumnDataSource(df),
            fill_alpha=1, line_alpha=0, color="colorspec")    
 
@@ -123,3 +130,32 @@ def draw_names(p, chromosomes):
         [i - 0.5 for i,_ in enumerate(reversed(chromosomes))],
         text=list(reversed(chromosomes)),
         text_align="right")
+
+
+def chromosome_plot(**kwargs):
+    '''
+    **kwargs provide keyword arguments to bokeh's figure:
+    
+    p = chromosome_plot(plot_width=800, plot_height=800,
+           title="Chromosomes",
+           x_range=[-17000000, np.max(chrdf['LN'])],
+           toolbar_location=None,
+           tools="")
+           
+    '''
+    p = figure(**kwargs)
+
+    p.xgrid.grid_line_color = None
+    p.ygrid.grid_line_color = None
+
+    p.xaxis.axis_line_color = None
+    p.xaxis.major_tick_line_color = None
+    p.xaxis.minor_tick_line_color = None
+    p.xaxis.major_label_text_font_size = '0pt'
+
+    p.yaxis.axis_line_color = None
+    p.yaxis.major_tick_line_color = None
+    p.yaxis.minor_tick_line_color = None
+    p.yaxis.major_label_text_font_size = '0pt'
+    return p
+    
