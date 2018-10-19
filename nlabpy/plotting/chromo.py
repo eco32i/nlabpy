@@ -109,11 +109,11 @@ def draw_ideograms(p, data, chromosomes=None):
             p.patches(
                 xs=xs,
                 ys=ys,
-                fill_alpha=0.5, line_alpha=0, color="#2244FF")
+                fill_alpha=0.75, line_alpha=0, color="#2244FF")
         else:
             src = ColumnDataSource(group)
             p.rect(x="center", y="chro", width="width", height=0.6, source=src,
-                   fill_alpha=0.15, line_alpha=0, color="color")
+                   line_alpha=0, color="color")
     
     
 def draw_track(p, data, chromosomes=None):
@@ -121,14 +121,17 @@ def draw_track(p, data, chromosomes=None):
     if chromosomes is not None:
         df = df[df['SN'].isin(chromosomes)]
     p.rect(x="center", y="chro", width="width", height=0.8, source=ColumnDataSource(df),
-           fill_alpha=1, line_alpha=0, color="colorspec")    
+           line_alpha=0, color="colorspec")    
 
 
 def draw_names(p, chromosomes):
+    chr_names = [x.split('chr')[1] if 'chr' in x else x for x in reversed(chromosomes)] 
     p.text(
         [-1500000 for x in chromosomes],
-        [i - 0.5 for i,_ in enumerate(reversed(chromosomes))],
-        text=list(reversed(chromosomes)),
+        [i - 0.5 for i,_ in enumerate(chr_names)],
+        text=list(chr_names),
+        text_font_size='16pt',
+        text_baseline="bottom",
         text_align="right")
 
 
