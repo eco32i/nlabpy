@@ -30,8 +30,7 @@ def demux(read1, read2, barcodes, mismatches=0, data_dir=None, progress=1000000)
                 print(stat)
             *_, bc = fq1[0].split()[1].split(':')
             for b in barcodes:
-                m = 0 if mismatches == 0 else hamming(b, bc)
-                if m <= mismatches:
+                if hamming(b, bc)  <= mismatches:
                     if not b in output_files:
                         output_files[b] = (
                             stack.enter_context(gzip.open(os.path.join(data_dir, fname_tpl.format(1, b)), 'wt')),
