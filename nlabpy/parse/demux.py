@@ -20,6 +20,7 @@ def illumina(fq):
     *_, bc = fq1[0].split()[1].split(':')
     return bc
 
+BC_FUNS = {'iclip': iclip, 'illumina': illumina}
 
 def demux(read1, read2, barcodes, bc_fun=illumina, mismatches=0, data_dir=None, progress=1000000):
     
