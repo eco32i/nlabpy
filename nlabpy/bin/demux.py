@@ -23,7 +23,7 @@ def main():
     print(kwargs)
 
     stat = demux(args.R1, args.R2, args.barcodes,
-            bc_fun=BC_FUN[kwargs['bc_fun']], mismatches=kwargs['mismatches'], data_dir=kwargs['data_dir'])
+            bc_fun=BC_FUNS[kwargs['bc_fun']], mismatches=kwargs['mismatches'], data_dir=kwargs['data_dir'])
     print(stat)
     print('Done.')
 
