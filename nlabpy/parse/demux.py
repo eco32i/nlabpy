@@ -16,6 +16,7 @@ def hamming(s1, s2):
 
 def demux(read1, read2, barcodes, mismatches=0, data_dir=None, progress=1000000):
     
+    print("STARTING demultiplexing ...")
     fq_tpl='@{}\n{}\n+\n{}\n'
     fname_tpl = 'R{}+{}.fastq.gz'
     barcodes = [s.upper() for s in barcodes]
