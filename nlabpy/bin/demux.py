@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import argparse
-from nlabpy.parse.demux import demux
+from nlabpy.parse.demux import demux, BC_FUNS
 
 def main():
     parser = argparse.ArgumentParser(
@@ -10,6 +10,8 @@ def main():
     parser.add_argument('R2', type=str, help='.fastq file with read2 sequences')
     parser.add_argument('-b', '--barcodes', nargs='+', type=str, help='barcode sequences')
     parser.add_argument('-m', '--mismatches', type=int, default=0, help='maximum number of mismatches in barcode')
+    parser.add_argument('-c', '--bc_fun', type=str, default='illumina',
+            help='barcodes function')
     parser.add_argument('-d', '--data_dir', type=str, default='',
             help='directory to write output files to')
 
@@ -21,7 +23,7 @@ def main():
     print(kwargs)
 
     stat = demux(args.R1, args.R2, args.barcodes,
-            mismatches=kwargs['mismatches'], data_dir=kwargs['data_dir'])
+            bc_fun=BC_FUNS[kwargs['bc_fun']], mismatches=kwargs['mismatches'], data_dir=kwargs['data_dir'])
     print(stat)
     print('Done.')
 

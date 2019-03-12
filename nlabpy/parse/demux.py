@@ -13,8 +13,16 @@ def hamming(s1, s2):
         raise ValueError('{s1} and {s2} must be the same length to compute Hamming distance!'.format(s1=s1, s2=s2))
     return sum(ch1 != ch2 for ch1,ch2 in zip(s1, s2))
 
+def iclip(fq):
+    return fq[1][3:7]
 
-def demux(read1, read2, barcodes, mismatches=0, data_dir=None, progress=1000000):
+def illumina(fq):
+    *_, bc = fq1[0].split()[1].split(':')
+    return bc
+
+BC_FUNS = {'iclip': iclip, 'illumina': illumina}
+
+def demux(read1, read2, barcodes, bc_fun=illumina, mismatches=0, data_dir=None, progress=1000000):
     
     print("STARTING demultiplexing ...")
     fq_tpl='@{}\n{}\n+\n{}\n'
@@ -29,7 +37,7 @@ def demux(read1, read2, barcodes, mismatches=0, data_dir=None, progress=1000000)
             if i % progress == 0:
                 print('{} reads processed'.format(i))
                 print(stat)
-            *_, bc = fq1[0].split()[1].split(':')
+            bc = bc_fun(fq1)
             for b in barcodes:
                 if hamming(b, bc)  <= mismatches:
                     if not b in output_files:
