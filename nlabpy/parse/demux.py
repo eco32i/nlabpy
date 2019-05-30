@@ -17,7 +17,7 @@ def iclip(fq):
     return fq[1][3:7]
 
 def illumina(fq):
-    *_, bc = fq1[0].split()[1].split(':')
+    *_, bc = fq[0].split()[1].split(':')
     return bc
 
 BC_FUNS = {'iclip': iclip, 'illumina': illumina}
