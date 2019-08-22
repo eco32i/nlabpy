@@ -10,7 +10,6 @@ def runas(newname):
         return f
     return decorator
 
-@runas('main')
 def parallel_run(f, data, args=None, kwargs=None):
     '''
     Runs function f over data provided in data in parallel.
@@ -20,27 +19,26 @@ def parallel_run(f, data, args=None, kwargs=None):
     args: possible additional positional arguments to be passed to f
     kwargs: keyword arguments to be passed to f
     '''
-    if __name__ == '__main__':
-        output = mp.Queue()
-        pool = []
-        for i,d in enumerate(data):
-            _args = list(d)
-            if args is not None:
-                _args.extend(args)
-            
-            if kwargs is not None:
-                kwargs = {'queue': output,}
-            else:
-                kwargs['queue'] = output
-            pool.append(mp.Process(target=f, args=_args, kwargs=kwargs))
+    output = mp.Queue()
+    pool = []
+    for i,d in enumerate(data):
+        _args = list(d)
+        if args is not None:
+            _args.extend(args)
         
-        print("started {} processes ...".format(i+1))
-        
-        for p in pool:
-            p.start()
+        if kwargs is not None:
+            kwargs = {'queue': output,}
+        else:
+            kwargs['queue'] = output
+        pool.append(mp.Process(target=f, args=_args, kwargs=kwargs))
+    
+    print("started {} processes ...".format(i+1))
+    
+    for p in pool:
+        p.start()
 
-        for p in pool:
-            p.join()
+    for p in pool:
+        p.join()
 
-        stat = [output.get() for p in pool]
-        return stat
+    stat = [output.get() for p in pool]
+    return stat
