@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import sys
+from nlabpy.parse.seq import parse_fastq
 
 # The following code is taken from Ben Langmead's lab teaching website:
 # https://nbviewer.jupyter.org/github/BenLangmead/comp-genomics-class/blob/master/notebooks/CG_kEditDp.ipynb
@@ -168,7 +169,7 @@ def mutations_per_position(fastq, ref, pdf, start=25, mismatch=4):
 
         if pdf[pdf['primer']==primer]['position'].values:
             pstart = pdf[pdf['primer']==primer]['position'].values[0]
-            ref_read = ref[pstart-len(read)-1:pstart]
+            ref_read = ref[pstart-len(read)-1:pstart-1]
         else:
             continue
         dist, off, xscript, *_ = kEditDp(rc(read), ref_read)
