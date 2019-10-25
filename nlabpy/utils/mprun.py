@@ -14,22 +14,26 @@ def parallel_run(f, data, args=None, kwargs=None):
     '''
     Runs function f over data provided in data in parallel.
 
-    f: function to be run
-    data: an iterable producing positional arguments to f
+    f: function to be run that needs to accept queue as a keyword argument
+    data: an iterable producing positional arguments to f, dicts are interpreted
+    as kwargs for f.
     args: possible additional positional arguments to be passed to f
     kwargs: keyword arguments to be passed to f
     '''
     output = mp.Queue()
     pool = []
+    if kwargs is None:
+        kwargs = {'queue': output,}
+    else:
+        kwargs['queue'] = output
     for i,d in enumerate(data):
-        _args = list(d)
-        if args is not None:
-            _args.extend(args)
-        
-        if kwargs is not None:
-            kwargs = {'queue': output,}
+        if isinstance(d, dict):
+            kwargs.update(d)
         else:
-            kwargs['queue'] = output
+            _args = list(d)
+            if args is not None:
+                _args.extend(args)
+        
         pool.append(mp.Process(target=f, args=_args, kwargs=kwargs))
     
     print("started {} processes ...".format(i+1))
