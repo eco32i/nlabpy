@@ -8,7 +8,7 @@ import scipy.cluster.hierarchy as sch
 import scipy.spatial.distance as dst
 
 
-def heatmap(x, row_header, column_header):
+def heatmap(x, row_header, column_header, **kwargs):
     
     """
     This below code is based in large part on the protype methods:
@@ -17,14 +17,19 @@ def heatmap(x, row_header, column_header):
 
     x is an m by n ndarray, m observations, n genes
     """
-    row_method = 'average'
-    column_method = 'single'
-    row_metric = 'cityblock' #cosine
-    column_metric = 'euclidean'
+    row_method = kwargs.get('row_method', 'average')
+    column_method = kwargs.get('column_method', 'single')
+    row_metric = kwargs.get('row_metric', 'cityblock')
+    column_metric = kwargs.get('column_metric', 'euclidean')
+    cmap = kwargs.get('cmap', pylab.cm.viridis)
+    ### Scale the Matplotlib window size
+    default_window_height = kwargs.get('default_window_height', 8.5)
+    default_window_width = kwargs.get('default_window_width', 12)
+    ### Sufficient size to show
+    color_bar_w = kwargs.get('color_bar_w', 0.015) 
     
     ### Define the color gradient to use based on the provided name
     m,n = x.shape
-    cmap = pylab.cm.viridis
 
     ### Scale the max and min colors so that 0 is white/black
     vmin=x.min().min()
@@ -36,13 +41,8 @@ def heatmap(x, row_header, column_header):
     ### adjust the max and min to scale these colors
     norm = mpl.colors.Normalize(vmin/2, vmax/2)
 
-    ### Scale the Matplotlib window size
-    default_window_height = 8.5
-    default_window_width = 12
     ### could use m,n to scale here
     fig = pylab.figure(figsize=(default_window_width, default_window_height)) 
-    ### Sufficient size to show
-    color_bar_w = 0.015 
         
     ## calculate positions for all elements
     # ax1, placement of dendrogram 1, on the left of the heatmap
@@ -199,8 +199,8 @@ def heatmap(x, row_header, column_header):
     
     ### Render the graphic
     if len(row_header)>50 or len(column_header)>50:
-        pylab.rcParams['font.size'] = 5
+        pylab.rcParams['font.size'] = kwargs.get('small_font_size', 5)
     else:
-        pylab.rcParams['font.size'] = 8
+        pylab.rcParams['font.size'] = kwargs.get('large_font_size', 8)
 
     pylab.show()
