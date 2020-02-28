@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-#from matplotlib import mpl
 import matplotlib.pyplot as pylab
 import matplotlib as mpl
 import scipy
@@ -8,7 +7,6 @@ import time
 import scipy.cluster.hierarchy as sch
 import scipy.spatial.distance as dst
 
-genes = []
 
 def heatmap(x, row_header, column_header):
     
@@ -25,21 +23,24 @@ def heatmap(x, row_header, column_header):
     column_metric = 'euclidean'
     
     ### Define the color gradient to use based on the provided name
-    n,m = len(x[0]), len(x)
+    m,n = x.shape
     cmap = pylab.cm.viridis
-    
+
     ### Scale the max and min colors so that 0 is white/black
-    vmin, vmax = x.min(), x.max()
-    vmax = max([vmax, abs(vmin)])
+    vmin=x.min().min()
+    vmax=x.max().max()
+    row_headervmax = max([vmax,abs(vmin)])
     vmin = vmax * -1
+    vmin = 0
+    
     ### adjust the max and min to scale these colors
     norm = mpl.colors.Normalize(vmin/2, vmax/2)
 
     ### Scale the Matplotlib window size
-    default_window_hight = 8.5
+    default_window_height = 8.5
     default_window_width = 12
     ### could use m,n to scale here
-    fig = pylab.figure(figsize=(default_window_width, default_window_hight)) 
+    fig = pylab.figure(figsize=(default_window_width, default_window_height)) 
     ### Sufficient size to show
     color_bar_w = 0.015 
         
@@ -142,18 +143,19 @@ def heatmap(x, row_header, column_header):
     axm.set_yticks([])
 
     # Add text
+    genes = []
     new_row_header=[]
     new_column_header=[]
     for i in range(x.shape[0]):
-        if row_method != None:
+        if row_method is not None:
             genes.append(row_header[idx1[i]])
             ### Don't visualize gene associations when more than 100 rows
-            if len(row_header)<100: 
+            if len(row_header) < 100: 
                 axm.text(x.shape[1]-0.5, i, '  '+row_header[idx1[i]])
             new_row_header.append(row_header[idx1[i]])
         else:
             ### Don't visualize gene associations when more than 100 rows
-            if len(row_header)<100:
+            if len(row_header) < 100:
                 ### When not clustering rows
                 axm.text(x.shape[1]-0.5, i, '  '+row_header[i])
             new_row_header.append(row_header[i])
