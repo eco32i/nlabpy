@@ -36,13 +36,14 @@ def parallel_run(f, data, args=None, kwargs=None):
         
         pool.append(mp.Process(target=f, args=_args, kwargs=kwargs))
     
-    print("started {} processes ...".format(i+1))
+    print("just started {} processes ...".format(i+1))
     
     for p in pool:
         p.start()
 
+    stat = [output.get() for p in pool]
+
     for p in pool:
         p.join()
 
-    stat = [output.get() for p in pool]
     return stat
