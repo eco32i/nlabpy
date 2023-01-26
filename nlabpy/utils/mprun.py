@@ -10,7 +10,7 @@ def runas(newname):
         return f
     return decorator
 
-def parallel_run(f, data, args=None, kwargs=None):
+def parallel_run(f, data, args=None, kwargs=None, expand=True):
     '''
     Runs function f over data provided in data in parallel.
 
@@ -19,6 +19,7 @@ def parallel_run(f, data, args=None, kwargs=None):
     as kwargs for f.
     args: possible additional positional arguments to be passed to f
     kwargs: keyword arguments to be passed to f
+    expand: controls how data and args are combined before passing to f
     '''
     output = mp.Queue()
     pool = []
@@ -30,13 +31,13 @@ def parallel_run(f, data, args=None, kwargs=None):
         if isinstance(d, dict):
             kwargs.update(d)
         else:
-            _args = list(d)
+            _args = list(d) if expand else [d]
             if args is not None:
                 _args.extend(args)
         
         pool.append(mp.Process(target=f, args=_args, kwargs=kwargs))
     
-    print("just started {} processes ...".format(i+1))
+    print(f"started {i+1} processes ...")
     
     for p in pool:
         p.start()
