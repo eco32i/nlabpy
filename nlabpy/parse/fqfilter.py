@@ -139,15 +139,7 @@ def filter_reads(fastq1, fastq2, pdf, mismatch=1, phase=3,
                         write_fastq('good', fqrec1, fqrec2)
                     else:
                         # No primer found
-                        stimport os
-import gzip
-import contextlib
-import numpy as np
-import pandas as pd
-from plotnine import *
-from nlabpy.parse.seq import parse_fastq
-from collections import Counter
-from pybloom_live import ScalableBloomFilterat['unknown'] += 1
+                        stat['unknown'] += 1
                         write_fastq('unknown', fqrec1, fqrec2)    
             else:
                 # T7 (anchor) not found

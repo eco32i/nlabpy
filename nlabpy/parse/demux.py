@@ -2,7 +2,6 @@ import os
 import contextlib
 import gzip
 from collections import Counter
-from itertools import zip_longest
 from .seq import parse_fastq
 
 def hamming(s1, s2):
