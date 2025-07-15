@@ -10,7 +10,7 @@ def hamming(s1, s2):
     Computes Hamming distance between s1 and s2.
     '''
     if len(s1) != len(s2):
-        raise ValueError('{s1} and {s2} must be the same length to compute Hamming distance!'.format(s1=s1, s2=s2))
+        raise ValueError(f'{s1} and {s2} must be the same length to compute Hamming distance!')
     return sum(ch1 != ch2 for ch1,ch2 in zip(s1, s2))
 
 def iclip(fq):
@@ -35,11 +35,12 @@ def demux(read1, read2, barcodes, bc_fun=illumina, mismatches=0, data_dir=None, 
         for fq1,fq2 in zip(parse_fastq(read1), parse_fastq(read2)):
             i += 1
             if i % progress == 0:
-                print('{} reads processed'.format(i))
+                print(f'{i} reads processed')
                 print(stat)
             bc = bc_fun(fq1)
             for b in barcodes:
-                if hamming(b, bc)  <= mismatches:
+                m = mismatches if mismatches == 0 else hamming(b, bc)
+                if m <= mismatches:
                     if not b in output_files:
                         output_files[b] = (
                             stack.enter_context(gzip.open(os.path.join(data_dir, fname_tpl.format(1, b)), 'wt')),
