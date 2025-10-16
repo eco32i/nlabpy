@@ -38,7 +38,7 @@ def demux(read1, read2, barcodes, bc_fun=illumina, mismatches=0, data_dir=None, 
                 print(stat)
             bc = bc_fun(fq1)
             for b in barcodes:
-                m = mismatches if mismatches == 0 else hamming(b, bc)
+                m = hamming(b, bc)
                 if m <= mismatches:
                     if not b in output_files:
                         output_files[b] = (
