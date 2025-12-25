@@ -55,7 +55,7 @@ def parse_compute_matrix(matrix_file):
 
     return pd.DataFrame(tidy_data), header
 
-def plot_profile(df, header, color='sample'):
+def plot_profile(df, header, color='sample', facet=None, figsize=(12,12)):
     """
     Generates a profile plot from a tidy DataFrame.
 
@@ -79,11 +79,16 @@ def plot_profile(df, header, color='sample'):
         geom_line() +
         geom_vline(xintercept=[body_start, body_end], linetype='dashed', color='black', alpha=0.4) +
         labs(x="Genomic Region (bp)", y="Mean Signal") +
-        theme_minimal()
+        theme_minimal() +
+        theme(
+            figure_size=figsize
+        )
     )
+    if facet is not None:
+        p += facet_wrap(f'~{facet}')
     return p
 
-def plot_heatmap(df, header, facet_by='sample', region_labels=('TSS', 'TES')):
+def plot_heatmap(df, header, facet_by='sample', region_labels=('TSS', 'TES'), figsize=(12,12)):
     """
     Generates a heatmap from a tidy DataFrame, ordering features by mean signal.
 
@@ -128,8 +133,8 @@ def plot_heatmap(df, header, facet_by='sample', region_labels=('TSS', 'TES')):
         ) +
         theme_minimal() +
         theme(
+            figure_size=figsize,
             axis_text_y=element_blank(),
-            #axis_text_x=element_blank(),
             axis_ticks_major_y=element_blank()
         )
     )
