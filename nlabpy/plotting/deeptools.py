@@ -55,7 +55,7 @@ def parse_compute_matrix(matrix_file):
 
     return pd.DataFrame(tidy_data), header
 
-def plot_profile(df, header, color='sample', facet=None, figsize=(12,12)):
+def plot_profile(df, header, color='sample', line_size=2, text_size=18, region_labels=('TSS', 'TES'), figsize=(12,12), facet_by=None):
     """
     Generates a profile plot from a tidy DataFrame.
 
@@ -76,19 +76,24 @@ def plot_profile(df, header, color='sample', facet=None, figsize=(12,12)):
 
     p = (
         ggplot(summary_df, aes(x='bp', y='value', color=color)) +
-        geom_line() +
+        geom_line(size=line_size) +
         geom_vline(xintercept=[body_start, body_end], linetype='dashed', color='black', alpha=0.4) +
         labs(x="Genomic Region (bp)", y="Mean Signal") +
         theme_minimal() +
         theme(
-            figure_size=figsize
+            figure_size=figsize,
+            axis_text_x=element_text(size=text_size),
+            axis_text_y=element_text(size=text_size),
+            axis_title=element_text(size=text_size),
+            legend_text=element_text(size=text_size)
+                       
         )
     )
-    if facet is not None:
-        p += facet_wrap(f'~{facet}')
+    if facet_by is not None:
+        p += facet_wrap(f'~{facet_by}')
     return p
 
-def plot_heatmap(df, header, facet_by='sample', region_labels=('TSS', 'TES'), figsize=(12,12)):
+def plot_heatmap(df, header, facet_by='sample', text_size=18, region_labels=('TSS', 'TES'), figsize=(12,12)):
     """
     Generates a heatmap from a tidy DataFrame, ordering features by mean signal.
 
@@ -105,6 +110,12 @@ def plot_heatmap(df, header, facet_by='sample', region_labels=('TSS', 'TES'), fi
 
     body_start = int(header['upstream'][0])
     body_end = int(body_start + header['body'][0])
+
+    # Find zMin and zMax and clip the ouliers
+    zMin = np.percentile(df['value'], 1)
+    zMax = np.percentile(df['value'], 98)
+    df.loc[df['value'] < zMin, 'value'] = zMin
+    df.loc[df['value'] > zMax, 'value'] = zMax
     
     # Calculate the mean value for each feature within the body
     feature_mean = (
@@ -131,11 +142,16 @@ def plot_heatmap(df, header, facet_by='sample', region_labels=('TSS', 'TES'), fi
             breaks=(body_start, body_end),
             labels=region_labels
         ) +
+        scale_fill_continuous(limits=(zMin, zMax)) +
         theme_minimal() +
         theme(
             figure_size=figsize,
             axis_text_y=element_blank(),
-            axis_ticks_major_y=element_blank()
+            axis_ticks_major_y=element_blank(),
+            axis_title=element_text(size=text_size),
+            legend_text=element_text(size=text_size),
+            plot_title=element_text(size=text_size),
+            strip_text=element_text(size=text_size)
         )
     )
     return p
