@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nlabpy"
+dynamic = ["version"]
+description = "scripts, functions and vizualization tools for NGS data"
+readme = "README.rst"
+requires-python = ">=3.8"
+authors = [
+    { name = "Ilya Shamovsky", email = "ilya.shamovsky@gmail.com" }
+]
+license = { text = "MIT" }
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "bokeh",
+    "pysam",
+    "plotnine",
+    "pandas >= 0.16.0",
+    "jupyter",
+    "numpy",
+]
+
+[project.urls]
+Homepage = "https://github.com/eco32i/nlabpy"
+
+[tool.setuptools.packages.find]
+include = ["nlabpy*"]
+
+[tool.setuptools.package-data]
+nlabpy = ["examples/*.html", "examples/*.txt", "examples/*.ipynb"]
+
+[tool.setuptools.dynamic]
+version = {attr = "nlabpy.__version__"}

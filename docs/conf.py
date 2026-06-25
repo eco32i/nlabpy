@@ -44,10 +44,9 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx',
               'sphinx.ext.todo',
               'sphinx.ext.coverage',
-              'sphinx.ext.pngmath',
+              'sphinx.ext.imgmath',
               'sphinx.ext.ifconfig',
               'sphinx.ext.autosummary',
-              'matplotlib.sphinxext.only_directives',
               'matplotlib.sphinxext.plot_directive',
               'IPython.sphinxext.ipython_directive',
               'IPython.sphinxext.ipython_console_highlighting',
@@ -84,14 +83,13 @@ copyright = '2016, Nudlerlab'
 # doc building), so use theversion extract from setup.py here as well.
 def extract_version():
     """
-    Extracts version values from the main matplotlib __init__.py and
-    returns them as a dictionary.
+    Extracts version values from the main nlabpy __init__.py
     """
     with open('../nlabpy/__init__.py') as fd:
-        for line in fd.readlines():
-            if (line.startswith('__version__')):
-                exec(line.strip())
-    return locals()["__version__"]
+        for line in fd:
+            if line.startswith('__version__'):
+                return line.split('=')[1].strip().strip("'\"")
+    raise RuntimeError("Version not found")
 version = '%s' % extract_version()
 
 # The full version, including alpha/beta/rc tags.
